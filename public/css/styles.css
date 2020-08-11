@@ -16,33 +16,40 @@
 }
 
 footer {
-    background: #601217;
+    background: #941c23;
     color: white;
     width: 100%;
 }
 
 header {
-    background: #601217;
+    background: #941c23;
     color: white;
 }
 
 .btn-primary {
-    background: #4267b2 !important;
-    border-color: #4267b2 !important;
+    background: #a60303 !important;
+    border-color: #a60303 !important;
 }
 
 .btn-primary:hover {
-    background: #1f3b72 !important;
-    border-color: #1f3b72 !important;
+    background: #d20303 !important;
+    border-color: #d20303 !important;
+}
+
+.btn-primary.focus,
+.btn-primary:focus {
+    color: #fff;
+    box-shadow: 0 0 0 0.2rem #ff040480 !important;
 }
 
 table {
-    border: 1px solid;
+
     width: 80%;
 }
 
-tr {
-    border: 1px solid;
+table, tr, th {
+    border: 1px solid #9999 !important;
+    /* border: 1px solid; */
 }
 
 .center {
@@ -58,4 +65,39 @@ tr {
 hr {
     width: 80%;
     border: 1px solid #9999;
+}
+
+.w-80 { width: 90% !important; }
+
+.btn-table {
+    border-radius: 50px !important;
+    width: 55px !important;
+}
+
+.table td, .table th {
+    vertical-align: inherit !important;
+    padding: 5px !important;
+}
+
+.float-right {
+    float: rigth;
+}
+
+.col-form-label {
+    text-align: right !important;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    width: 15px !important;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+    box-shadow: none !important;
+}
+.m-0x { margin: 0px !important; }
+
+.pointer {
+    cursor: pointer;
 }
