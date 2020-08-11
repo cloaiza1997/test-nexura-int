@@ -5,8 +5,7 @@
     @section('url_back', url('employee'))
     @include('layouts.partials.back')
 
-    <br />
-    <h2>Crear Empleado</h2>
+    <h2><i class="fas fa-user-tie"></i> Crear Empleado <i class="fas fa-user-tie"></i></h2>
     <br />
 
     <form action="{{ route('employee.store') }}" method="POST" class="container center">
@@ -74,7 +73,7 @@
             <div class="col-sm-8">
                 @foreach($rols as $rol)
                     <div class="flx">
-                        <input type="checkbox" class="form-control" id="{{ $rol->id }}" name="rol" value="{{ $rol->id }}" required />
+                        <input type="checkbox" class="form-control" id="{{ $rol->id }}" name="rol[]" value="{{ $rol->id }}" required />
                         &nbsp;
                         <label for="{{ $rol->id }}" class="pointer m-0x">{{ $rol->nombre }}</label>
                     </div>
@@ -82,7 +81,7 @@
             </div>
         </div>
 
-        <button type="sumit" class="btn btn-success">Guardar</button>
+        <button type="sumit" class="btn btn-success"><i class="fas fa-save"></i> Guardar</button>
     </form>
 
     @include('layouts.partials.message')

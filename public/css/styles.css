@@ -1,5 +1,6 @@
 * {
     font-family: 'century gothic';
+    margin: 0 !important;
 }
 
 .content {
@@ -19,11 +20,13 @@ footer {
     background: #941c23;
     color: white;
     width: 100%;
+    padding: 5px !important;
 }
 
 header {
     background: #941c23;
     color: white;
+    padding: 10px !important;
 }
 
 .btn-primary {
@@ -59,7 +62,29 @@ table, tr, th {
 .message {
     padding: 5px;
     border-radius: 5px;
-    background: #c0e3ff;
+    color: white;
+}
+
+.msg_success {
+    background: #2c9945;
+}
+
+.msg_error {
+    background: #c44f4f;
+}
+
+.message_error {
+    padding: 10px;
+    background: #fbfb9d;
+    border-radius: 10px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.red-c {
+    color: #a60303 !important;
 }
 
 hr {
@@ -100,4 +125,8 @@ input[type="radio"]:focus {
 
 .pointer {
     cursor: pointer;
+}
+
+.form-group {
+    margin: .5rem !important;
 }

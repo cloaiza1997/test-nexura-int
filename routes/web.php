@@ -18,3 +18,7 @@ Route::get('/', function () {
 });
 
 Route::resource('employee', 'EmpleadosController');
+
+Route::get('error', function(){
+    return view("error.error");
+});

@@ -15,6 +15,8 @@
         </a>
     </div>
 
+    @include('layouts.partials.message')
+
     <br/>
 
     <table class="table w-80">
