@@ -27,7 +27,7 @@ Si se clona o descarga el repositorio se debe de:
 
 Se encuentra en el archivo data_base.sql
     
-Cambiar el archivo .env los datos de conexión de la base de datos (Usuario y Contraseña), por defecto está con unsuario root y sin contraseña
+Cambiar en el archivo .env los datos de conexión de la base de datos (Usuario y Contraseña), por defecto está con unsuario root y sin contraseña
 
         DB_USERNAME=root
         DB_PASSWORD=
