@@ -5,10 +5,11 @@
 @section('url_back', url('employee'))
     @include('layouts.partials.back')
 
-    <h2><i class="fas fa-user-tie"></i> Crear Empleado <i class="fas fa-user-tie"></i></h2>
+    <h2><i class="fas fa-user-tie"></i> Editar Empleado <i class="fas fa-user-tie"></i></h2>
     <br />
 
-    <form action="{{ route('employee.store') }}" method="POST" class="container center">
+    <form action="{{ route('employee.update', $employee->id) }}" method="POST" class="container center">
+        <input type="hidden" name="_method" value="PUT" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
         @if ($errors->any())
@@ -31,7 +32,7 @@
             <label for="nombre" class="col-sm-4 col-form-label">Nombre completo *</label>
             <div class="col-sm-8">
                 <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre completo del empleado"
-                    value="{{ old('nombre') }}" />
+                    value="{{ old('nombre') ?? $employee->nombre }}" />
             </div>
         </div>
 
@@ -39,7 +40,7 @@
             <label for="email" class="col-sm-4 col-form-label">Correo electrónico *</label>
             <div class="col-sm-8">
                 <input type="email" class="form-control" id="email" name="email" placeholder="Correo electrónico"
-                    value="{{ old('email') }}" />
+                    value="{{ old('email') ?? $employee->email }}" />
             </div>
         </div>
 
@@ -49,13 +50,13 @@
                 @foreach ($sexs as $sex)
                     <div class="flx">
                         <input type="radio" class="form-control" id="{{ $sex[0] }}" name="sexo" value="{{ $sex[0] }}"
-                            @if (old('sexo') == $sex[0]) checked
-                @endif />
-                &nbsp;
-                <label for="{{ $sex[0] }}" class="pointer m-0x">{{ $sex[1] }}</label>
-            </div>
+                            @if ( (old('sexo') ?? $employee->sexo) == $sex[0]) checked @endif
+                            />
+                        &nbsp;
+                        <label for="{{ $sex[0] }}" class="pointer m-0x">{{ $sex[1] }}</label>
+                    </div>
             @endforeach
-        </div>
+            </div>
         </div>
 
         <div class="form-group row">
@@ -64,9 +65,11 @@
                 <select class="form-control" id="area_id" name="area_id">
                     <option disabled selected></option>
                     @foreach ($areas as $area)
-                        <option value="{{ $area->id }}" @if (old('area_id') == $area->id)
-                            selected
-                    @endif>{{ $area->nombre }}</option>
+                        <option value="{{ $area->id }}"
+                            @if (old('area_id') ?? $employee->area_id == $area->id) selected @endif
+                            >
+                            {{ $area->nombre }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -76,7 +79,7 @@
             <label for="descripcion" class="col-sm-4 col-form-label">Descripción *</label>
             <div class="col-sm-8">
                 <textarea class="form-control" id="descripcion" name="descripcion"
-                    placeholder="Descripción de la experiencia del empleado">{{ old('descripcion') }}</textarea>
+                    placeholder="Descripción de la experiencia del empleado">{{ old('descripcion') ?? $employee->descripcion }}</textarea>
             </div>
         </div>
 
@@ -84,7 +87,9 @@
             <label class="col-sm-4 col-form-label"></label>
             <div class="col-sm-8">
                 <div class="flx">
-                    <input type="checkbox" class="form-control" id="boletin" name="boletin" @if(old('boletin') == 'on') checked @endif/>
+                    <input type="checkbox" class="form-control" id="boletin" name="boletin"
+                        @if(old('boletin') ? old('boletin') == 'on' : $employee->boletin == 1) checked @endif
+                        />
                     &nbsp;
                     <label for="boletin" class="pointer m-0x">Deseo recibir el boletín informativo</label>
                 </div>
@@ -101,6 +106,10 @@
                             @if(old('rol') != null)
                                 @foreach(old('rol') as $old)
                                     @if($old == $rol->id) checked @endif
+                                @endforeach
+                            @else
+                                @foreach($employee->roles as $rol_db)
+                                    @if($rol_db["rol_id"] == $rol->id) checked @endif
                                 @endforeach
                             @endif
                             />

@@ -9,6 +9,8 @@ use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Validator;
+
 /**
  * Clase encargada de la gestión de empleados
  */
@@ -51,8 +53,9 @@ class EmpleadosController extends Controller
     }
     /**
      * Obtiene los parámetros necesarios para el formulario de creación
+     * @param object employee Objeto de empleado cuando se va a editar
      */
-    public function create()
+    public function create($employee = null)
     {
 
         $sexs = [
@@ -64,10 +67,13 @@ class EmpleadosController extends Controller
 
         $rols = Rol::all();
 
-        return view(self::FOLDER . ".crear")->with([
+        $view = ($employee) ? "editar" : "crear";
+
+        return view(self::FOLDER . ".{$view}")->with([
             "sexs" => $sexs,
             "areas" => $areas,
             "rols" => $rols,
+            "employee" => $employee,
         ]);
     }
     /**
@@ -109,6 +115,19 @@ class EmpleadosController extends Controller
         return $this->executeAction($function);
     }
     /**
+     * Consulta un empleado a editar
+     * @param number $id Id del empleado a editar
+     */
+    public function edit($id)
+    {
+
+        $employee = Empleado::find($id);
+
+        $employee->roles = EmpleadoRol::where("empleado_id", $id)->get();
+
+        return $this->create($employee);
+    }
+    /**
      * Crea un empleado en la base de datos
      * @param request $request Datos recibidos del formulario
      * @return view list Confirmación de la ejecución
@@ -117,6 +136,37 @@ class EmpleadosController extends Controller
     {
         $inputs = $request->all();
 
+        // Nombre: Sin números ni caracteres especiales, solo tildes
+        // Sexo: F o M
+
+        $validator = Validator::make(
+            $inputs,
+            [
+                "nombre" => "required|string|max:255|regex:/^[A-ZáéíóúÁÉÍÓÚ\s]*$/i",
+                "email" => "required|string|email|unique:empleados,email",
+                "sexo" => "required|string|regex:/[F,M]/",
+                "area_id" => "required|numeric",
+                "descripcion" => "required|string",
+                "rol" => "required",
+            ],
+            [
+                "area_id.required" => "Área es requerida",
+                "descripcion.required" => "Descripción es requerida",
+                "email.required" => "Email es requerido",
+                "email.unique" => "Email ya registrado",
+                "nombre.regex" => "Nombre solo adminite letras",
+                "nombre.required" => "Nombre es requerido",
+                "sexo.required" => "Sexo es requerido",
+                "rol.required" => "Rol es requerido",
+            ]
+        );
+        // En caso de error se retorna al formulario y se muestran los errores
+        if ($validator->fails()) {
+            return redirect('employee/create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $function = function () use ($inputs) {
             // Crear empleado
             $employee = new Empleado();
@@ -124,7 +174,7 @@ class EmpleadosController extends Controller
             $employee->email = $inputs["email"];
             $employee->sexo = $inputs["sexo"];
             $employee->area_id = $inputs["area_id"];
-            $employee->boletin = ($inputs["boletin"] == "on") ? 1 : 0;
+            $employee->boletin = (isset($inputs["boletin"])) ? 1 : 0;
             $employee->descripcion = $inputs["descripcion"];
             $success = $employee->save();
 
@@ -140,6 +190,84 @@ class EmpleadosController extends Controller
                 $type_message = "success";
             } else {
                 $message = "Empleado no se pudo crear correctamente";
+                $type_message = "error";
+            }
+
+            return redirect("employee")->with([
+                "message" => $message,
+                "type_message" => $type_message
+            ]);
+        };
+
+        return $this->executeAction($function);
+    }
+    /**
+     * Actualiza un empleado en la base de datos
+     * @param request $request Datos del formulario
+     * @param number $id Id del empleado a editar
+     * @
+     */
+    public function update(Request $request, $id)
+    {
+        $inputs = $request->all();
+
+        // Nombre: Sin números ni caracteres especiales, solo tildes
+        // Sexo: F o M
+
+        $validator = Validator::make(
+            $inputs,
+            [
+                "nombre" => "required|string|max:255|regex:/^[A-ZáéíóúÁÉÍÓÚ\s]*$/i",
+                "email" => "required|string|email|unique:empleados,email,{$id}",
+                "sexo" => "required|string|regex:/[F,M]/",
+                "area_id" => "required|numeric",
+                "descripcion" => "required|string",
+                "rol" => "required",
+            ],
+            [
+                "area_id.required" => "Área es requerida",
+                "descripcion.required" => "Descripción es requerida",
+                "email.required" => "Email es requerido",
+                "email.unique" => "Email ya registrado",
+                "nombre.regex" => "Nombre solo adminite letras",
+                "nombre.required" => "Nombre es requerido",
+                "sexo.required" => "Sexo es requerido",
+                "rol.required" => "Rol es requerido",
+            ]
+        );
+        // En caso de error se retorna al formulario y se muestran los errores
+        if ($validator->fails()) {
+            return redirect("employee/{$id}/edit")
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $function = function () use ($inputs, $id) {
+            // Consultar empleado
+            $employee = Empleado::find($id);
+            $employee->nombre = $inputs["nombre"];
+            $employee->email = $inputs["email"];
+            $employee->sexo = $inputs["sexo"];
+            $employee->area_id = $inputs["area_id"];
+            $employee->boletin = (isset($inputs["boletin"])) ? 1 : 0;
+            $employee->descripcion = $inputs["descripcion"];
+            $success = $employee->save();
+
+            if ($success) {
+                // Se eliminan los roles
+                DB::delete("DELETE FROM empleado_rol WHERE empleado_id = {$employee->id}");
+                // Se crean los roles
+                foreach ($inputs["rol"] as $rol_id) {
+                    $rol = new EmpleadoRol();
+                    $rol->empleado_id = $employee->id;
+                    $rol->rol_id = $rol_id;
+                    $rol->save();
+                }
+
+                $message = "Empleado {$employee->nombre} editado correctamente";
+                $type_message = "success";
+            } else {
+                $message = "Empleado no se pudo editar correctamente";
                 $type_message = "error";
             }
 

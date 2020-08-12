@@ -130,3 +130,7 @@ input[type="radio"]:focus {
 .form-group {
     margin: .5rem !important;
 }
+
+.left {
+    text-align: left !important;
+}
