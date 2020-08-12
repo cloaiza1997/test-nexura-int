@@ -5,6 +5,8 @@ Hecha en Laravel y MySQL.
 
 ## Base de Datos
 
+Se encuentra en el archivo data_base.sql
+    
     Cambiar el archivo .env los datos de conexión de la base de datos (Usuario y Contraseña), por defecto está con unsuario root y sin contraseña
 
         DB_USERNAME=root
