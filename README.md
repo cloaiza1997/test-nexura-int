@@ -44,4 +44,4 @@ Se implementa validación del request con la clase Validator de Laravel.
 
 * Se valida que todos los campos estén diligenciados.
 * Se valida el nombre mediante una expresión regular para que sólo permita letras con o sin tilde.
-* Se valida que el email a registrar se único.
+* Se valida que el email a registrar sea único.
