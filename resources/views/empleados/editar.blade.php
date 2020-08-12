@@ -8,7 +8,7 @@
     <h2><i class="fas fa-user-tie"></i> Editar Empleado <i class="fas fa-user-tie"></i></h2>
     <br />
 
-    <form action="{{ route('employee.update', $employee->id) }}" method="POST" class="container center">
+    <form id="frm_edit" action="{{ route('employee.update', $employee->id) }}" method="POST" class="container center">
         <input type="hidden" name="_method" value="PUT" />
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
@@ -124,4 +124,31 @@
 
     @include('layouts.partials.message')
 
+@endsection
+
+@section('personal_scripts')
+<script>
+
+    $(function(){
+        $("#frm_edit").validate({
+            rules: {
+                nombre: { required: true },
+                email: { required: true },
+                sexo: { required: true },
+                area_id: { required: true },
+                descripcion: { required: true },
+                rol: { required: true },
+            },
+            messages: {
+                nombre: "Nombre es requerido",
+                email: "Email es requerido",
+                sexo: "Sexo es requerido",
+                area_id: "Área es requerida",
+                descripcion: "Descripción es requerida",
+            },
+            errorClass: 'error_class'
+        })
+    });
+
+</script>
 @endsection

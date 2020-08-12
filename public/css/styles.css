@@ -69,8 +69,12 @@ table, tr, th {
     background: #2c9945;
 }
 
-.msg_error {
-    background: #c44f4f;
+.error_class {
+    color: red;
+}
+
+.msg_error{
+    background: #c44f4f !important;
 }
 
 .message_error {
